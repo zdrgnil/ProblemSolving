@@ -1,50 +1,34 @@
+import java.util.Collections;
+import java.util.PriorityQueue;
 
 public class MainArea {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int[] nums = { 1, 3, -1, -3, 5, 3, 6, 7 };
-		int[] num1 = {};
-		System.out.println(maxPos(nums, 3, 0));
-		printIntArray(maxSlidingWindow(num1, 0));
+		int[][] m = { { 1, 4, 7, 11, 15 }, { 2, 5, 8, 12, 19 }, { 3, 6, 9, 16, 22 }, { 10, 13, 14, 17, 24 },
+				{ 18, 21, 23, 26, 30 } };
+		int[] m2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		int[][] m3 = { { 1 } };
+
+		// System.out.println(binarySearch(m[0], 4));
+		for (int r = 0; r < m.length; r++) {
+			for (int t : m[r])
+				System.out.print(searchMatrix(m, t) + ",");
+			System.out.println();
+		}
 	}
 
-	/**
-	 * <239. Sliding Window Maximum > Given an array nums, there is a sliding
-	 * window of size k which is moving from the very left of the array to the
-	 * very right. You can only see the k numbers in the window. Each time the
-	 * sliding window moves right by one position.
-	 * 
-	 * For example, Given nums = [1,3,-1,-3,5,3,6,7], and k = 3. return the max
-	 * sliding window as [3,3,5,5,6,7].
-	 */
-
-	public static int[] maxSlidingWindow(int[] nums, int k) {
-		if (nums.length == 0)
-			return nums;
-		int result[] = new int[nums.length - k + 1];
-		int maxPos = maxPos(nums, k, 0);
-		result[0] = nums[maxPos];
-		for (int start = 1; start < result.length; start++) {
-			int end = start + k - 1;
-			if (maxPos < start)
-				maxPos = maxPos(nums, k, start);
-			else {
-				if (nums[end] >= nums[maxPos])
-					maxPos = end;
-			}
-			result[start] = nums[maxPos];
+	public static boolean searchMatrix(int[][] matrix, int target) {
+		int r = 0, c = matrix[0].length - 1;
+		while (r < matrix.length && c >= 0) {
+			if (matrix[r][c] == target)
+				return true;
+			if (target > matrix[r][c])
+				r++;
+			else
+				c--;
 		}
-		return result;
-	}
-
-	private static int maxPos(int nums[], int k, int starting) {
-		int max_pos = starting;
-		for (int i = starting + 1; i < starting + k; i++) {
-			if (nums[i] > nums[max_pos])
-				max_pos = i;
-		}
-		return max_pos;
+		return false;
 	}
 
 	public static void printIntArray(int nums[]) {
