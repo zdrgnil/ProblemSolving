@@ -3,183 +3,87 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
+
+import LeetCodeOJ.CopyListWithRandomPointer;
+import LeetCodeOJ.GetIntersectionNode;
+import LeetCodeOJ.LengthOfLongestSubstring;
+import LeetCodeOJ.LetterCombinationsOfPhoneNumber;
+import LeetCodeOJ.LongestPalindromic;
+import LeetCodeOJ.MinStack;
+import LeetCodeOJ.SerializeAndDeserializeBT;
+import LeetCodeOJ.TwoSum;
+import LeetCodeOJ.ValidAnagram;
+import LeetCodeOJ.ValidParentheses;
+import LeetCodeOJ.WordBreak;
+import OOD.Card;
 
 public class MainArea {
 
 	public static void main(String[] args) {
-		// int a[] = { 0, 1, 3, 9 };
-		// int b[] = { 2, 1, 7, 5 };
-		// Scheduling s = new Scheduling();
-		// System.out.println(s.shortestJobFirst(a, b));
-		TreeRelated t = new TreeRelated();
-		t.test();
+		Card ace = new Card(0, Card.Suit.SPADE);
+		Card king = new Card(13, Card.Suit.SPADE);
+		if (ace.compareTo(king) < 0)
+			System.out.println("ace bigger");
 
 	}
 
-	class TNode {
-		public int value;
-		public TNode left;
-		public TNode right;
-	}
-
-	public static int minTreePath(TNode t) {
-		if (t == null)
-			return 0;
-		if (t.left == null && t.right == null)
-			return t.value;
-		else if (t.left == null && t.right != null)
-			return minTreePath(t.right) + t.value;
-		else if (t.left != null && t.right == null)
-			return minTreePath(t.left) + t.value;
-		else
-			return Math.min(minTreePath(t.left), minTreePath(t.right)) + t.value;
-	}
-
-	public static float shortestJobFirst(int[] Atime, int[] Etime) {
-		class Process {
-			public int arrive;
-			public int execute;
-
-			public Process(int arrive, int execute) {
-				this.arrive = arrive;
-				this.execute = execute;
-			}
-		}
-		PriorityQueue<Process> ps = new PriorityQueue<Process>(Atime.length, new Comparator<Process>() {
-			@Override
-			public int compare(Process arg0, Process arg1) {
-				if (arg0.execute == arg1.execute)
-					return arg0.arrive - arg1.arrive;
-				else {
-					return arg0.execute - arg1.execute;
+	public static void reverseWords(char[] s) {
+		int c = 0;
+		char r[] = new char[s.length];
+		for (int i = s.length - 1; i >= -1; i--) {
+			if (i == -1 || s[i] == ' ') {
+				for (int j = i + 1; j < s.length; j++) {
+					r[c] = s[j];
+					c++;
+					if (s[j] == ' ')
+						break;
 				}
 			}
-		});
-		int queP;
-		for (queP = 1; queP < Atime.length; queP++) {
-			if (Atime[queP] > (Atime[0] + Etime[0]))
-				break;
-			ps.add(new Process(Atime[queP], Etime[queP]));
 		}
-
-		float waiting = 0;
-		int curTime = Atime[0] + Etime[0];
-		while (!ps.isEmpty() || queP < Atime.length) {
-			Process curP = ps.poll();
-			waiting += curTime - curP.arrive;
-			curTime += curP.execute;
-			for (; queP < Atime.length; queP++) {
-				if (Atime[queP] > curTime)
-					break;
-				ps.add(new Process(Atime[queP], Etime[queP]));
-			}
-
-		}
-		// for (Process p : ps) {
-		// System.out.println(p.arrive + " : " + p.execute);
-		// }
-		return waiting / Atime.length;
+		for (int i = 0; i < s.length; i++)
+			s[i] = r[i];
 	}
 
-	public static float RoundRobinScheduling(int[] Atime, int[] Etime, int q) {
-		class process {
-			public int arrTime;
-			public int exeTime;
-
-			public process(int arrive, int execute) {
-				this.arrTime = arrive;
-				this.exeTime = execute;
-			}
+	public static void reverseWords2(char[] s) {
+		if (s.length <= 1)
+			return;
+		String str = String.copyValueOf(s);
+		String[] words = str.split(" ");
+		String result = "";
+		for (int i = words.length - 1; i >= 0; i--)
+			result += " " + words[i];
+		result = result.trim();
+		char[] c = result.toCharArray();
+		for (int i = 0; i < c.length; i++) {
+			s[i] = c[i];
 		}
-
-		if (Atime == null || Etime == null || Atime.length != Etime.length)
-			return 0;
-		int length = Atime.length;
-		Queue<process> queue = new LinkedList<process>();
-		int curTime = 0, waitTime = 0;
-		int index = 0;
-		while (!queue.isEmpty() || index < length) {
-			if (!queue.isEmpty()) {
-				process cur = queue.poll();
-				waitTime += curTime - cur.arrTime;
-				curTime += Math.min(cur.exeTime, q);
-				for (; index < length && Atime[index] <= curTime; index++)
-					queue.offer(new process(Atime[index], Etime[index]));
-				if (cur.exeTime > q)
-					queue.offer(new process(curTime, cur.exeTime - q));
-			} else {
-				queue.add(new process(Atime[index], Etime[index]));
-				curTime = Atime[index++];
-			}
-		}
-		return (float) waitTime / length;
 	}
 
-	public static float roundRobin(int[] Atime, int[] Etime, int q) {
-		class Process {
-			public int arrive;
-			public int execute;
-
-			public Process(int arrive, int execute) {
-				this.arrive = arrive;
-				this.execute = execute;
-			}
-		}
-
-		float waiting = 0;
-		int cp = 0;
-		int curTime = 0;
-		Process curP;
-		Queue<Process> ps = new LinkedList<Process>();
-		for (int i = 0; i < Atime.length; i++) {
-			ps.add(new Process(Atime[i], Etime[i]));
-		}
-		curP = ps.poll();
-		while (curP != null) {
-			if (curP.arrive > curTime) {
-				curTime = curP.arrive;
-				continue;
-			}
-			waiting += curTime - curP.arrive;
-			System.out.println(cp + " - " + curTime + "," + curP.arrive + ":" + (curTime - curP.arrive));
-			if (curP.execute <= q) {
-				curTime += curP.execute;
-				curP = ps.poll();
-				cp++;
-				continue;
-			} else {
-				curTime += q;
-				curP.arrive = curTime;
-				curP.execute -= q;
-				// check if next p arrived
-				if (ps.peek() != null && ps.peek().arrive <= curTime) {
-					ps.add(curP);
-					curP = ps.poll();
+	public static int countPrimes(int n) {
+		boolean[] notPrime = new boolean[n];
+		int count = 0;
+		for (int i = 2; i < n; i++) {
+			if (!notPrime[i]) {
+				count++;
+				for (int j = 2; i * j < n; j++) {
+					notPrime[i * j] = true;
 				}
-				cp++;
 			}
-
 		}
-		return waiting / Atime.length;
+		return count;
 	}
 
-	public static int[] twoSum(int[] nums, int target) {
-		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			int numj = target - nums[i];
-			if (m.containsKey(numj)) {
-				int si = (nums[i] < numj ? i : m.get(numj));
-				int bi = (nums[i] > numj ? i : m.get(numj));
-				return new int[] { si, bi };
-			}
-			m.put(nums[i], i);
-		}
-		return new int[] { 0, 0 };
+	public static String sortStr(String str) {
+		char[] cs = str.toCharArray();
+		Arrays.sort(cs);
+		return String.copyValueOf(cs);
 	}
 
 	public static void findOptimalWeights(double capacity, double[] weights) {
